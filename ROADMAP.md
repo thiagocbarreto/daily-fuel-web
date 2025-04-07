@@ -4,7 +4,7 @@ This roadmap outlines the steps needed to implement the DailyFuel product as spe
 
 ## Phase 1: Database Setup and Authentication
 
-1. **Configure Supabase Database Schema**
+1. **Configure Supabase Database Schema using MCP server**
    - Create `users` table with fields:
      - `id` (uuid, PK)
      - `email` (text)

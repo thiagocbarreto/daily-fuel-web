@@ -46,27 +46,6 @@ export interface Database {
           }
         ]
       }
-      migrations: {
-        Row: {
-          id: number
-          name: string
-          batch: number
-          migration_time: string
-        }
-        Insert: {
-          id?: number
-          name: string
-          batch: number
-          migration_time?: string
-        }
-        Update: {
-          id?: number
-          name?: string
-          batch?: number
-          migration_time?: string
-        }
-        Relationships: []
-      }
       challenges: {
         Row: {
           id: string
