@@ -22,12 +22,12 @@ console.log('   DailyFuel Database Rollback Tool');
 console.log('='.repeat(50));
 console.log('Loading migrations...');
 
-// Run rollback
+// Run the rollback process
 rollbackLastBatch()
   .then(() => {
     process.exit(0);
   })
   .catch((error) => {
-    console.error('\n❌ Rollback failed:', error);
+    console.error('Error during rollback:', error);
     process.exit(1);
   }); 

@@ -7,7 +7,9 @@ import { TABLES, MigrationInsert } from './schema';
 
 interface Migration {
   name: string;
-  filePath: string;
+  folderPath: string;
+  upFilePath: string;
+  downFilePath: string;
   timestamp: Date;
   batch?: number;
   executed?: boolean;
@@ -18,20 +20,34 @@ interface Migration {
  */
 function getMigrationFiles(): Migration[] {
   const migrationsDir = path.join(process.cwd(), 'libs', 'supabase', 'migrations', 'sql');
-  const migrationFiles = fs.readdirSync(migrationsDir)
-    .filter(file => file.endsWith('.sql'))
-    .sort(); // Ensure sequential order by filename
+  
+  // Get all directories in the migrations/sql folder
+  const migrationFolders = fs.readdirSync(migrationsDir, { withFileTypes: true })
+    .filter(dirent => dirent.isDirectory())
+    .map(dirent => dirent.name)
+    .sort(); // Ensure sequential order by folder name
 
-  return migrationFiles.map(fileName => {
-    // Parse timestamp from filename (format: YYYYMMDD_HHMMSS_name.sql)
-    const timestampStr = fileName.split('_')[0];
+  return migrationFolders.map(folderName => {
+    const folderPath = path.join(migrationsDir, folderName);
+    const upFilePath = path.join(folderPath, 'up.sql');
+    const downFilePath = path.join(folderPath, 'down.sql');
+
+    // Verify that up.sql exists
+    if (!fs.existsSync(upFilePath)) {
+      throw new Error(`Migration ${folderName} is missing up.sql file`);
+    }
+
+    // Parse timestamp from foldername (format: YYYYMMDD_HHMMSS_name)
+    const timestampStr = folderName.split('_')[0];
     const year = parseInt(timestampStr.substring(0, 4));
     const month = parseInt(timestampStr.substring(4, 6)) - 1; // JS months are 0-indexed
     const day = parseInt(timestampStr.substring(6, 8));
     
     return {
-      name: fileName.replace('.sql', ''),
-      filePath: path.join(migrationsDir, fileName),
+      name: folderName,
+      folderPath,
+      upFilePath,
+      downFilePath,
       timestamp: new Date(year, month, day),
     };
   });
@@ -79,13 +95,23 @@ async function getExecutedMigrations(supabase: SupabaseClient<Database>): Promis
       return [];
     }
 
-    return data.map(row => ({
-      name: row.name,
-      filePath: '', // Not needed for executed migrations
-      timestamp: new Date(row.migration_time),
-      batch: row.batch,
-      executed: true
-    }));
+    const migrationsDir = path.join(process.cwd(), 'libs', 'supabase', 'migrations', 'sql');
+
+    return data.map(row => {
+      const folderPath = path.join(migrationsDir, row.name);
+      const upFilePath = path.join(folderPath, 'up.sql');
+      const downFilePath = path.join(folderPath, 'down.sql');
+
+      return {
+        name: row.name,
+        folderPath,
+        upFilePath,
+        downFilePath,
+        timestamp: new Date(row.migration_time),
+        batch: row.batch,
+        executed: true
+      };
+    });
   } catch (error) {
     console.error('Error checking migrations:', error);
     return [];
@@ -144,8 +170,8 @@ async function executeMigration(
   try {
     console.log(`Running migration: ${migration.name}`);
     
-    // Read SQL from file
-    const sql = fs.readFileSync(migration.filePath, 'utf8');
+    // Read SQL from up.sql file
+    const sql = fs.readFileSync(migration.upFilePath, 'utf8');
     
     // Execute the SQL
     const { error } = await supabase.rpc('exec_sql', { sql });
@@ -160,6 +186,38 @@ async function executeMigration(
     console.log(`✅ Successfully ran migration: ${migration.name}`);
   } catch (error) {
     console.error(`❌ Failed to run migration ${migration.name}:`, error);
+    throw error;
+  }
+}
+
+/**
+ * Rolls back a single migration
+ */
+export async function rollbackMigration(
+  supabase: SupabaseClient<Database>,
+  migration: Migration
+): Promise<void> {
+  try {
+    console.log(`Rolling back migration: ${migration.name}`);
+
+    // Check if down.sql exists
+    if (!fs.existsSync(migration.downFilePath)) {
+      throw new Error(`Migration ${migration.name} is missing down.sql file`);
+    }
+    
+    // Read SQL from down.sql file
+    const sql = fs.readFileSync(migration.downFilePath, 'utf8');
+    
+    // Execute the SQL
+    const { error } = await supabase.rpc('exec_sql', { sql });
+    
+    if (error) {
+      throw new Error(`Error executing rollback SQL: ${error.message}`);
+    }
+    
+    console.log(`✅ Successfully rolled back migration: ${migration.name}`);
+  } catch (error) {
+    console.error(`❌ Failed to roll back migration ${migration.name}:`, error);
     throw error;
   }
 }
