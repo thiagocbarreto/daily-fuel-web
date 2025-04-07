@@ -159,7 +159,12 @@ export interface Database {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      exec_sql: {
+        Args: {
+          sql: string
+        }
+        Returns: void
+      }
     }
     Enums: {
       [_ in never]: never
