@@ -7,6 +7,7 @@ This roadmap outlines the steps needed to implement the DailyFuel product as spe
 1. **Configure Supabase Database Schema using MCP server**
    - Create `users` table with fields:
      - `id` (uuid, PK)
+     - `name` (text)
      - `email` (text)
      - `is_subscriber` (boolean)
      - `stripe_customer_id` (text)

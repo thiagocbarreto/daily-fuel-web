@@ -12,6 +12,7 @@ export interface Database {
       users: {
         Row: {
           id: string
+          name: string
           email: string
           is_subscriber: boolean
           stripe_customer_id: string | null
@@ -21,6 +22,7 @@ export interface Database {
         }
         Insert: {
           id: string
+          name: string
           email: string
           is_subscriber?: boolean
           stripe_customer_id?: string | null
@@ -30,6 +32,7 @@ export interface Database {
         }
         Update: {
           id?: string
+          name?: string
           email?: string
           is_subscriber?: boolean
           stripe_customer_id?: string | null
