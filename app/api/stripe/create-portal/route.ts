@@ -1,6 +1,7 @@
 import { NextResponse, NextRequest } from "next/server";
 import { createClient } from "@/libs/supabase/server";
 import { createCustomerPortal } from "@/libs/stripe";
+import { TABLES } from "@/libs/supabase/schema";
 
 export async function POST(req: NextRequest) {
   try {
@@ -26,12 +27,12 @@ export async function POST(req: NextRequest) {
     }
 
     const { data } = await supabase
-      .from("profiles")
+      .from(TABLES.USERS)
       .select("*")
       .eq("id", user?.id)
       .single();
 
-    if (!data?.customer_id) {
+    if (!data?.stripe_customer_id) {
       return NextResponse.json(
         {
           error: "You don't have a billing account yet. Make a purchase first.",
@@ -41,7 +42,7 @@ export async function POST(req: NextRequest) {
     }
 
     const stripePortalUrl = await createCustomerPortal({
-      customerId: data.customer_id,
+      customerId: data.stripe_customer_id,
       returnUrl: body.returnUrl,
     });
 

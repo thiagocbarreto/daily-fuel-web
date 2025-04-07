@@ -1,5 +1,6 @@
 import { createCheckout } from "@/libs/stripe";
 import { createClient } from "@/libs/supabase/server";
+import { TABLES } from "@/libs/supabase/schema";
 import { NextRequest, NextResponse } from "next/server";
 
 // This function is used to create a Stripe Checkout Session (one-time payment or subscription)
@@ -38,7 +39,7 @@ export async function POST(req: NextRequest) {
     const { priceId, mode, successUrl, cancelUrl } = body;
 
     const { data } = await supabase
-      .from("profiles")
+      .from(TABLES.USERS)
       .select("*")
       .eq("id", user?.id)
       .single();
@@ -48,12 +49,10 @@ export async function POST(req: NextRequest) {
       mode,
       successUrl,
       cancelUrl,
-      // If user is logged in, it will pass the user ID to the Stripe Session so it can be retrieved in the webhook later
       clientReferenceId: user?.id,
       user: {
         email: data?.email,
-        // If the user has already purchased, it will automatically prefill it's credit card
-        customerId: data?.customer_id,
+        customerId: data?.stripe_customer_id,
       },
       // If you send coupons from the frontend, you can pass it here
       // couponId: body.couponId,
