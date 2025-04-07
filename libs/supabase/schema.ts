@@ -10,6 +10,7 @@ export const TABLES = {
   CHALLENGES: 'challenges',
   CHALLENGE_PARTICIPANTS: 'challenge_participants',
   DAILY_LOGS: 'daily_logs',
+  MIGRATIONS: 'migrations',
 } as const;
 
 export type TableName = typeof TABLES[keyof typeof TABLES];
@@ -32,4 +33,9 @@ export type ChallengeParticipantUpdate = UpdateRow<'challenge_participants'>;
 // Daily log-related types
 export type DailyLog = Row<'daily_logs'>;
 export type DailyLogInsert = InsertRow<'daily_logs'>;
-export type DailyLogUpdate = UpdateRow<'daily_logs'>; 
+export type DailyLogUpdate = UpdateRow<'daily_logs'>;
+
+// Migration-related types
+export type Migration = Row<'migrations'>;
+export type MigrationInsert = InsertRow<'migrations'>;
+export type MigrationUpdate = UpdateRow<'migrations'>; 

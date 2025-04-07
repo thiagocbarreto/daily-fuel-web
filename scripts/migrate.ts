@@ -15,14 +15,18 @@ import { runMigrations } from '../libs/supabase/migrate';
 // Load environment variables from .env.local
 dotenv.config({ path: '.env.local' });
 
+// Print header
+console.log('='.repeat(50));
+console.log('   DailyFuel Database Migration Tool');
+console.log('='.repeat(50));
+console.log('Loading migrations...');
+
 // Run all migrations
-console.log('Running database migrations...');
 runMigrations()
   .then(() => {
-    console.log('✅ Migrations completed successfully');
     process.exit(0);
   })
   .catch((error) => {
-    console.error('❌ Migration failed:', error);
+    console.error('\n❌ Migration failed:', error);
     process.exit(1);
   }); 

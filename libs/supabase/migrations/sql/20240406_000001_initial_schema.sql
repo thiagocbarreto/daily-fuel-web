@@ -11,6 +11,15 @@ BEGIN
 END;
 $$;
 
+-- Create migrations tracking table
+CREATE TABLE IF NOT EXISTS "migrations" (
+  "id" SERIAL PRIMARY KEY,
+  "name" TEXT NOT NULL,
+  "batch" INTEGER NOT NULL,
+  "migration_time" TIMESTAMP WITH TIME ZONE DEFAULT now() NOT NULL,
+  CONSTRAINT "unique_migration_name" UNIQUE ("name")
+);
+
 -- Users table
 -- This table extends Supabase's auth.users table with additional metadata
 CREATE TABLE IF NOT EXISTS "users" (

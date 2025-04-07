@@ -46,6 +46,27 @@ export interface Database {
           }
         ]
       }
+      migrations: {
+        Row: {
+          id: number
+          name: string
+          batch: number
+          migration_time: string
+        }
+        Insert: {
+          id?: number
+          name: string
+          batch: number
+          migration_time?: string
+        }
+        Update: {
+          id?: number
+          name?: string
+          batch?: number
+          migration_time?: string
+        }
+        Relationships: []
+      }
       challenges: {
         Row: {
           id: string
@@ -165,6 +186,38 @@ export interface Database {
         }
         Returns: void
       }
+    }
+    Enums: {
+      [_ in never]: never
+    }
+    CompositeTypes: {
+      [_ in never]: never
+    }
+  }
+  // For querying system tables
+  pg_catalog: {
+    Tables: {
+      pg_tables: {
+        Row: {
+          schemaname: string
+          tablename: string
+          tableowner: string
+          tablespace: string | null
+          hasindexes: boolean
+          hasrules: boolean
+          hastriggers: boolean
+          rowsecurity: boolean
+        }
+        Insert: never
+        Update: never
+        Relationships: never
+      }
+    }
+    Views: {
+      [_ in never]: never
+    }
+    Functions: {
+      [_ in never]: never
     }
     Enums: {
       [_ in never]: never
