@@ -33,7 +33,7 @@ This roadmap outlines the steps needed to implement the DailyFuel product as spe
      - `challenge_id` (uuid, FK to challenges.id)
      - `user_id` (uuid, FK to users.id)
      - `date` (date)
-   
+
 2. **Setup Authentication**
    - Configure magic link and Google Auth with Supabase
    - Implement sign-in page (/signin route already exists)
@@ -181,4 +181,4 @@ This roadmap outlines the steps needed to implement the DailyFuel product as spe
    - Create comprehensive error handling strategy
    - Implement logging for debugging and monitoring
 
-This roadmap provides a structured approach to implementing the DailyFuel product. Each phase builds upon the previous one, allowing for incremental development and testing. 
+This roadmap provides a structured approach to implementing the DailyFuel product. Each phase builds upon the previous one, allowing for incremental development and testing.

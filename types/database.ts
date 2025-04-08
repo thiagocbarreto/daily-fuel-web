@@ -19,6 +19,7 @@ export interface Database {
           subscription_status: string | null
           current_period_end: string | null
           created_at: string
+          price_id: string | null
         }
         Insert: {
           id: string
@@ -29,6 +30,7 @@ export interface Database {
           subscription_status?: string | null
           current_period_end?: string | null
           created_at?: string
+          price_id?: string | null
         }
         Update: {
           id?: string
@@ -39,6 +41,7 @@ export interface Database {
           subscription_status?: string | null
           current_period_end?: string | null
           created_at?: string
+          price_id?: string | null
         }
         Relationships: [
           {

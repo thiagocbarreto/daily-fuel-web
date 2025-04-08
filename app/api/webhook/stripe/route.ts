@@ -12,9 +12,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
 const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
 // This is where we receive Stripe webhook events
-// It used to update the user data, send emails, etc...
-// By default, it'll store the user in the database
-// See more: https://shipfa.st/docs/features/payments
+// It updates user subscription status, allowing users to create challenges
 export async function POST(req: NextRequest) {
   const body = await req.text();
 
@@ -31,6 +29,12 @@ export async function POST(req: NextRequest) {
 
   // verify Stripe event is legit
   try {
+    if (!signature || !webhookSecret) {
+      return NextResponse.json(
+        { error: "Missing signature or webhook secret" },
+        { status: 400 }
+      );
+    }
     event = stripe.webhooks.constructEvent(body, signature, webhookSecret);
   } catch (err) {
     console.error(`Webhook signature verification failed. ${err.message}`);
@@ -42,10 +46,9 @@ export async function POST(req: NextRequest) {
   try {
     switch (eventType) {
       case "checkout.session.completed": {
-        // First payment is successful and a subscription is created (if mode was set to "subscription" in ButtonCheckout)
-        // ✅ Grant access to the product
-        const stripeObject: Stripe.Checkout.Session = event.data
-          .object as Stripe.Checkout.Session;
+        // First payment is successful and a subscription is created
+        // Grant subscriber status to create challenges
+        const stripeObject = event.data.object as Stripe.Checkout.Session;
 
         const session = await findCheckoutSession(stripeObject.id);
 
@@ -54,124 +57,178 @@ export async function POST(req: NextRequest) {
         const userId = stripeObject.client_reference_id;
         const plan = configFile.stripe.plans.find((p) => p.priceId === priceId);
 
-        const customer = (await stripe.customers.retrieve(
-          customerId as string
-        )) as Stripe.Customer;
+        if (!customerId || !priceId || !plan) break;
 
-        if (!plan) break;
+        // Retrieve customer details
+        const customerResponse = await stripe.customers.retrieve(customerId as string);
+        if (customerResponse.deleted) break;
+        
+        // Cast to Customer type (now that we've verified it's not deleted)
+        const customer = customerResponse as Stripe.Customer;
 
         let user;
         if (!userId) {
-          // check if user already exists
-          const { data: profile } = await supabase
-            .from("profiles")
+          // Check if user already exists by email
+          const { data: existingUser } = await supabase
+            .from("users")
             .select("*")
             .eq("email", customer.email)
             .single();
-          if (profile) {
-            user = profile;
+          
+          if (existingUser) {
+            user = existingUser;
           } else {
-            // create a new user using supabase auth admin
+            // Create a new user using supabase auth admin
             const { data } = await supabase.auth.admin.createUser({
-              email: customer.email,
+              email: customer.email as string,
             });
 
             user = data?.user;
+            
+            // Create user record
+            if (user) {
+              await supabase
+                .from("users")
+                .insert({
+                  id: user.id,
+                  email: customer.email,
+                  name: customer.name || "",
+                });
+            }
           }
         } else {
-          // find user by ID
-          const { data: profile } = await supabase
-            .from("profiles")
+          // Find user by ID
+          const { data: existingUser } = await supabase
+            .from("users")
             .select("*")
             .eq("id", userId)
             .single();
 
-          user = profile;
+          user = existingUser;
         }
 
-        await supabase
-          .from("profiles")
-          .update({
-            customer_id: customerId,
-            price_id: priceId,
-            has_access: true,
-          })
-          .eq("id", user?.id);
+        if (!user) break;
 
-        // Extra: send email with user link, product page, etc...
-        // try {
-        //   await sendEmail(...);
-        // } catch (e) {
-        //   console.error("Email issue:" + e?.message);
-        // }
+        // Get subscription details to set current_period_end
+        let currentPeriodEnd: string | null = null;
+        const subscriptionId = stripeObject.subscription;
+        
+        if (subscriptionId && typeof subscriptionId === 'string') {
+          const subscription = await stripe.subscriptions.retrieve(subscriptionId);
+          currentPeriodEnd = new Date(subscription.current_period_end * 1000).toISOString();
+        }
+
+        // Update user with subscription details
+        await supabase
+          .from("users")
+          .update({
+            stripe_customer_id: customerId,
+            price_id: priceId,
+            is_subscriber: true,
+            subscription_status: "active",
+            current_period_end: currentPeriodEnd
+          })
+          .eq("id", user.id);
 
         break;
       }
 
       case "checkout.session.expired": {
         // User didn't complete the transaction
-        // You don't need to do anything here, by you can send an email to the user to remind him to complete the transaction, for instance
         break;
       }
 
       case "customer.subscription.updated": {
-        // The customer might have changed the plan (higher or lower plan, cancel soon etc...)
-        // You don't need to do anything here, because Stripe will let us know when the subscription is canceled for good (at the end of the billing cycle) in the "customer.subscription.deleted" event
-        // You can update the user data to show a "Cancel soon" badge for instance
+        // The customer might have changed the plan
+        const stripeObject = event.data.object as Stripe.Subscription;
+        
+        // Update the subscription end date
+        const currentPeriodEnd = new Date(stripeObject.current_period_end * 1000).toISOString();
+        
+        await supabase
+          .from("users")
+          .update({
+            subscription_status: stripeObject.status,
+            current_period_end: currentPeriodEnd
+          })
+          .eq("stripe_customer_id", stripeObject.customer as string);
+        
         break;
       }
 
       case "customer.subscription.deleted": {
         // The customer subscription stopped
-        // ❌ Revoke access to the product
-        const stripeObject: Stripe.Subscription = event.data
-          .object as Stripe.Subscription;
-        const subscription = await stripe.subscriptions.retrieve(
-          stripeObject.id
-        );
+        // Revoke ability to create challenges
+        const stripeObject = event.data.object as Stripe.Subscription;
 
         await supabase
-          .from("profiles")
-          .update({ has_access: false })
-          .eq("customer_id", subscription.customer);
+          .from("users")
+          .update({ 
+            is_subscriber: false,
+            subscription_status: "canceled"
+          })
+          .eq("stripe_customer_id", stripeObject.customer as string);
         break;
       }
 
       case "invoice.paid": {
-        // Customer just paid an invoice (for instance, a recurring payment for a subscription)
-        // ✅ Grant access to the product
-        const stripeObject: Stripe.Invoice = event.data
-          .object as Stripe.Invoice;
-        const priceId = stripeObject.lines.data[0].price.id;
+        // Customer just paid an invoice (recurring payment for subscription)
+        const stripeObject = event.data.object as Stripe.Invoice;
+        const priceId = stripeObject.lines.data[0]?.price?.id;
         const customerId = stripeObject.customer;
 
-        // Find profile where customer_id equals the customerId (in table called 'profiles')
-        const { data: profile } = await supabase
-          .from("profiles")
+        if (!priceId || !customerId) break;
+
+        // Find user where stripe_customer_id equals the customerId
+        const { data: user } = await supabase
+          .from("users")
           .select("*")
-          .eq("customer_id", customerId)
+          .eq("stripe_customer_id", customerId)
           .single();
 
-        // Make sure the invoice is for the same plan (priceId) the user subscribed to
-        if (profile.price_id !== priceId) break;
+        if (!user) break;
 
-        // Grant the profile access to your product. It's a boolean in the database, but could be a number of credits, etc...
-        await supabase
-          .from("profiles")
-          .update({ has_access: true })
-          .eq("customer_id", customerId);
+        // Make sure the invoice is for the same plan the user subscribed to
+        if (user.price_id !== priceId) break;
+
+        // If there's a subscription, update the current_period_end
+        const subscriptionId = stripeObject.subscription;
+        if (subscriptionId && typeof subscriptionId === 'string') {
+          const subscription = await stripe.subscriptions.retrieve(subscriptionId);
+          
+          const currentPeriodEnd = new Date(subscription.current_period_end * 1000).toISOString();
+          
+          // Update subscription status
+          await supabase
+            .from("users")
+            .update({ 
+              is_subscriber: true,
+              subscription_status: "active",
+              current_period_end: currentPeriodEnd
+            })
+            .eq("stripe_customer_id", customerId);
+        }
 
         break;
       }
 
-      case "invoice.payment_failed":
-        // A payment failed (for instance the customer does not have a valid payment method)
-        // ❌ Revoke access to the product
-        // ⏳ OR wait for the customer to pay (more friendly):
-        //      - Stripe will automatically email the customer (Smart Retries)
-        //      - We will receive a "customer.subscription.deleted" when all retries were made and the subscription has expired
-
+      case "invoice.payment_failed": {
+        // A payment failed, mark subscription as past_due
+        const stripeObject = event.data.object as Stripe.Invoice;
+        
+        if (!stripeObject.customer) break;
+        
+        await supabase
+          .from("users")
+          .update({ 
+            subscription_status: "past_due" 
+          })
+          .eq("stripe_customer_id", stripeObject.customer as string);
+        
+        // The subscription will be canceled automatically by Stripe after retries
+        // We'll receive a "customer.subscription.deleted" event when that happens
         break;
+      }
 
       default:
       // Unhandled event type

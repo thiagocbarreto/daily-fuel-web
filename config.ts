@@ -3,12 +3,12 @@ import { ConfigProps } from "./types/config";
 
 const config = {
   // REQUIRED
-  appName: "ShipFast",
+  appName: "DailyFuel",
   // REQUIRED: a short description of your app for SEO tags (can be overwritten)
   appDescription:
-    "The NextJS boilerplate with all you need to build your SaaS, AI tool, or any other web app.",
+    "Create challenges and share them with whoever you want.",
   // REQUIRED (no https://, not trialing slash at the end, just the naked domain)
-  domainName: "shipfa.st",
+  domainName: "dailyfuel.app",
   crisp: {
     // Crisp website ID. IF YOU DON'T USE CRISP: just remove this => Then add a support email in this config file (resend.supportEmail) otherwise customer support won't work.
     id: "",
@@ -22,47 +22,45 @@ const config = {
         // REQUIRED — we use this to find the plan in the webhook (for instance if you want to update the user's credits based on the plan)
         priceId:
           process.env.NODE_ENV === "development"
-            ? "price_1Niyy5AxyNprDp7iZIqEyD2h"
-            : "price_456",
+            ? "prod_S5l1QeQa4yTBwt"
+            : "prod_S5km7BxuqnGtjH",
         //  REQUIRED - Name of the plan, displayed on the pricing page
-        name: "Starter",
+        name: "Monthly",
         // A friendly description of the plan, displayed on the pricing page. Tip: explain why this plan and not others
-        description: "Perfect for small projects",
+        description: "Create challenges",
         // The price you want to display, the one user will be charged on Stripe.
-        price: 99,
+        price: 6,
         // If you have an anchor price (i.e. $29) that you want to display crossed out, put it here. Otherwise, leave it empty
-        priceAnchor: 149,
+        priceAnchor: 8,
         features: [
           {
-            name: "NextJS boilerplate",
+            name: "Create unlimited challenges",
           },
-          { name: "User oauth" },
-          { name: "Database" },
-          { name: "Emails" },
+          { name: "Share them with whoever you want" },
         ],
       },
-      {
-        priceId:
-          process.env.NODE_ENV === "development"
-            ? "price_1O5KtcAxyNprDp7iftKnrrpw"
-            : "price_456",
-        // This plan will look different on the pricing page, it will be highlighted. You can only have one plan with isFeatured: true
-        isFeatured: true,
-        name: "Advanced",
-        description: "You need more power",
-        price: 149,
-        priceAnchor: 299,
-        features: [
-          {
-            name: "NextJS boilerplate",
-          },
-          { name: "User oauth" },
-          { name: "Database" },
-          { name: "Emails" },
-          { name: "1 year of updates" },
-          { name: "24/7 support" },
-        ],
-      },
+      // {
+      //   priceId:
+      //     process.env.NODE_ENV === "development"
+      //       ? "price_1O5KtcAxyNprDp7iftKnrrpw"
+      //       : "price_456",
+      //   // This plan will look different on the pricing page, it will be highlighted. You can only have one plan with isFeatured: true
+      //   isFeatured: true,
+      //   name: "Advanced",
+      //   description: "You need more power",
+      //   price: 149,
+      //   priceAnchor: 299,
+      //   features: [
+      //     {
+      //       name: "NextJS boilerplate",
+      //     },
+      //     { name: "User oauth" },
+      //     { name: "Database" },
+      //     { name: "Emails" },
+      //     { name: "1 year of updates" },
+      //     { name: "24/7 support" },
+      //   ],
+      // },
     ],
   },
   aws: {
@@ -73,11 +71,11 @@ const config = {
   },
   resend: {
     // REQUIRED — Email 'From' field to be used when sending magic login links
-    fromNoReply: `ShipFast <noreply@resend.shipfa.st>`,
+    fromNoReply: `DailyFuel <no-reply@dailyfuel.app>`,
     // REQUIRED — Email 'From' field to be used when sending other emails, like abandoned carts, updates etc..
-    fromAdmin: `Marc at ShipFast <marc@resend.shipfa.st>`,
+    fromAdmin: `DailyFuel <admin@dailyfuel.app>`,
     // Email shown to customer if need support. Leave empty if not needed => if empty, set up Crisp above, otherwise you won't be able to offer customer support."
-    supportEmail: "marc.louvion@gmail.com",
+    supportEmail: "support@dailyfuel.app",
   },
   colors: {
     // REQUIRED — The DaisyUI theme to use (added to the main layout.js). Leave blank for default (light & dark mode). If you any other theme than light/dark, you need to add it in config.tailwind.js in daisyui.themes.
