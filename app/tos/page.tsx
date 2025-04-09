@@ -12,15 +12,15 @@ import config from "@/config";
 // You are an excellent lawyer.
 
 // I need your help to write a simple Terms & Services for my website. Here is some context:
-// - Website: https://shipfa.st
-// - Name: ShipFast
-// - Contact information: marc@shipfa.st
+// - Website: https://dailyfuel.app
+// - Name: DailyFuel
+// - Contact information: thiago@dailyfuel.app
 // - Description: A JavaScript code boilerplate to help entrepreneurs launch their startups faster
 // - Ownership: when buying a package, users can download code to create apps. They own the code but they do not have the right to resell it. They can ask for a full refund within 7 day after the purchase.
 // - User data collected: name, email and payment information
 // - Non-personal data collection: web cookies
-// - Link to privacy-policy: https://shipfa.st/privacy-policy
-// - Governing Law: France
+// - Link to privacy-policy: https://dailyfuel.app/privacy-policy
+// - Governing Law: Brazil
 // - Updates to the Terms: users will be updated by email
 
 // Please write a simple Terms & Services for my site. Add the current date. Do not add or explain your reasoning. Answer:
@@ -57,39 +57,33 @@ const TOS = () => {
           className="leading-relaxed whitespace-pre-wrap"
           style={{ fontFamily: "sans-serif" }}
         >
-          {`Last Updated: September 26, 2023
+          {`Effective Date: April 9, 2025
 
-Welcome to ShipFast!
+Welcome to DailyFuel (https://dailyfuel.app). By using our website, you agree to the following Terms of Service.
 
-These Terms of Service ("Terms") govern your use of the ShipFast website at https://shipfa.st ("Website") and the services provided by ShipFast. By using our Website and services, you agree to these Terms.
+1. Description of Service
+DailyFuel provides a JavaScript code boilerplate to help entrepreneurs launch their startups faster.
 
-1. Description of ShipFast
+2. Ownership and License
+DailyFuel is a subscription-based service that allows users to join challenges for free and, with a paid subscription, create and invite others to challenges.
+You may not resell, sublicense, or commercially redistribute access to the platform or its features.
+All platform content, design, and code remain the property of DailyFuel.
 
-ShipFast is a platform that offers a JavaScript code boilerplate to assist entrepreneurs in launching their startups more efficiently.
+3. Refund Policy
+You may request a full refund within 7 days of your purchase. Please contact us at thiago@dailyfuel.app.
 
-2. Ownership and Usage Rights
-
-When you purchase a package from ShipFast, you gain the right to download and use the code provided for creating applications. You own the code you create but do not have the right to resell it. We offer a full refund within 7 days of purchase, as specified in our refund policy.
-
-3. User Data and Privacy
-
-We collect and store user data, including name, email, and payment information, as necessary to provide our services. For details on how we handle your data, please refer to our Privacy Policy at https://shipfa.st/privacy-policy.
-
-4. Non-Personal Data Collection
-
-We use web cookies to collect non-personal data for the purpose of improving our services and user experience.
+4. User Data
+We collect your name, email address, and payment information to process orders. We also use web cookies to improve your experience.
+For more details, please read our Privacy Policy: https://dailyfuel.app/privacy-policy
 
 5. Governing Law
-
-These Terms are governed by the laws of France.
+These terms are governed by the laws of Brazil.
 
 6. Updates to the Terms
+We may update these Terms from time to time. Users will be notified of any changes by email.
 
-We may update these Terms from time to time. Users will be notified of any changes via email.
-
-For any questions or concerns regarding these Terms of Service, please contact us at marc@shipfa.st.
-
-Thank you for using ShipFast!`}
+7. Contact
+For any questions, contact us at thiago@dailyfuel.app.`}
         </pre>
       </div>
     </main>
