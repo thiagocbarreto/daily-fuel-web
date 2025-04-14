@@ -55,6 +55,15 @@ module.exports = {
           "100%": { backgroundPosition: "0% 50%" },
         },
       },
+      colors: {
+        brand: {
+          orange: '#F97316',
+          green: '#22C55E',
+          teal: '#0F766E',
+          slate: '#1E293B',
+          yellow: '#EAB308'
+        }
+      }
     },
   },
   plugins: [require("daisyui")],

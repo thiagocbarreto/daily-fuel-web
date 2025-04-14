@@ -9,12 +9,12 @@ const config = {
     "Create challenges and share them with whoever you want.",
   // REQUIRED (no https://, not trialing slash at the end, just the naked domain)
   domainName: "dailyfuel.app",
-  crisp: {
-    // Crisp website ID. IF YOU DON'T USE CRISP: just remove this => Then add a support email in this config file (resend.supportEmail) otherwise customer support won't work.
-    id: "",
-    // Hide Crisp by default, except on route "/". Crisp is toggled with <ButtonSupport/>. If you want to show Crisp on every routes, just remove this below
-    onlyShowOnRoutes: ["/"],
-  },
+  // crisp: {
+  //   // Crisp website ID. IF YOU DON'T USE CRISP: just remove this => Then add a support email in this config file (resend.supportEmail) otherwise customer support won't work.
+  //   id: "",
+  //   // Hide Crisp by default, except on route "/". Crisp is toggled with <ButtonSupport/>. If you want to show Crisp on every routes, just remove this below
+  //   onlyShowOnRoutes: ["/"],
+  // },
   stripe: {
     // Create multiple plans in your Stripe dashboard, then add them here. You can add as many plans as you want, just make sure to add the priceId
     plans: [
@@ -22,8 +22,8 @@ const config = {
         // REQUIRED — we use this to find the plan in the webhook (for instance if you want to update the user's credits based on the plan)
         priceId:
           process.env.NODE_ENV === "development"
-            ? "prod_S5l1QeQa4yTBwt"
-            : "prod_S5km7BxuqnGtjH",
+            ? "price_1RDnSeH955v6HSMYWECyGbf6"
+            : "price_1RBZGrH955v6HSMYNl2DuH8V",
         //  REQUIRED - Name of the plan, displayed on the pricing page
         name: "Monthly",
         // A friendly description of the plan, displayed on the pricing page. Tip: explain why this plan and not others
@@ -39,28 +39,24 @@ const config = {
           { name: "Share them with whoever you want" },
         ],
       },
-      // {
-      //   priceId:
-      //     process.env.NODE_ENV === "development"
-      //       ? "price_1O5KtcAxyNprDp7iftKnrrpw"
-      //       : "price_456",
-      //   // This plan will look different on the pricing page, it will be highlighted. You can only have one plan with isFeatured: true
-      //   isFeatured: true,
-      //   name: "Advanced",
-      //   description: "You need more power",
-      //   price: 149,
-      //   priceAnchor: 299,
-      //   features: [
-      //     {
-      //       name: "NextJS boilerplate",
-      //     },
-      //     { name: "User oauth" },
-      //     { name: "Database" },
-      //     { name: "Emails" },
-      //     { name: "1 year of updates" },
-      //     { name: "24/7 support" },
-      //   ],
-      // },
+      {
+        priceId:
+          process.env.NODE_ENV === "development"
+            ? "price_1RBZVpH955v6HSMYLBvZpXKr"
+            : "price_1RBZGKH955v6HSMYkYbmVZcQ",
+        // This plan will look different on the pricing page, it will be highlighted. You can only have one plan with isFeatured: true
+        // isFeatured: true,
+        name: "Yearly",
+        description: "",
+        price: 48,
+        priceAnchor: 72,
+        features: [
+          {
+            name: "Create unlimited challenges",
+          },
+          { name: "Share them with whoever you want" },
+        ],
+      },
     ],
   },
   aws: {

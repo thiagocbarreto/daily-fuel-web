@@ -13,22 +13,53 @@ interface FAQItemProps {
 
 const faqList: FAQItemProps[] = [
   {
-    question: "What do I get exactly?",
-    answer: <div className="space-y-2 leading-relaxed">Loreum Ipseum</div>,
+    question: "What is DailyFuel?",
+    answer: (
+      <div className="space-y-2 leading-relaxed">
+        <p>
+          DailyFuel is a minimalist challenge-based app where you can create and join X-day challenges to build habits and stay accountable. Whether it&apos;s &quot;30 days of writing&quot; or &quot;14 days of workouts,&quot; DailyFuel helps you track your progress and build consistency.
+        </p>
+      </div>
+    ),
   },
   {
-    question: "Can I get a refund?",
+    question: "What's the difference between free and paid plans?",
     answer: (
       <p>
-        Yes! You can request a refund within 7 days of your purchase. Reach out
-        by email.
+        Free users can join challenges and track their progress but cannot create challenges. Subscribers ($6/month or $54/year) can create unlimited challenges and share them with anyone, plus get access to participation statistics.
       </p>
     ),
   },
   {
-    question: "I have another question",
+    question: "How do I create a challenge?",
     answer: (
-      <div className="space-y-2 leading-relaxed">Cool, contact us by email</div>
+      <div className="space-y-2 leading-relaxed">
+        <p>
+          To create a challenge, you need to be a subscriber. Once subscribed, simply:
+        </p>
+        <ol className="list-decimal pl-4">
+          <li>Go to your dashboard</li>
+          <li>Click &quot;Create Challenge&quot;</li>
+          <li>Enter the title, description, daily goal, and duration</li>
+          <li>Share the generated link with anyone you want to join</li>
+        </ol>
+      </div>
+    ),
+  },
+  {
+    question: "Can I cancel my subscription?",
+    answer: (
+      <p>
+        Yes, you can cancel your subscription at any time. If you cancel, you&apos;ll still have access to subscriber features until the end of your billing period. For yearly subscriptions, we don&apos;t offer prorated refunds for partial usage.
+      </p>
+    ),
+  },
+  {
+    question: "How do I join someone else's challenge?",
+    answer: (
+      <div className="space-y-2 leading-relaxed">
+        <p>Simply click the challenge link they shared with you. If you&apos;re not logged in, you&apos;ll be prompted to sign in or create an account. Once logged in, you&apos;ll automatically be joined to the challenge and can start tracking your progress.</p>
+      </div>
     ),
   },
 ];

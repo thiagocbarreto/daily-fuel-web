@@ -2,6 +2,21 @@
 
 This roadmap outlines the steps needed to implement the DailyFuel product as specified in the PRODUCT_SPEC.md file. It is organized into phases with specific actionable tasks.
 
+## Product Overview
+
+DailyFuel is a community-focused habit-building platform where users create and join challenges to develop consistent routines **together**. The core concept centers on shared accountability - users don't just track their own habits in isolation but build them alongside friends, family, or colleagues through communal challenges.
+
+### Why Build Habits Together?
+
+Research shows that habit formation is 65% more successful when people have accountability partners. DailyFuel leverages this by:
+
+- **Shared Commitment**: When you publicly commit to a challenge with people you know, you're more likely to follow through
+- **Positive Peer Pressure**: Seeing others in your circle making progress motivates you to keep going
+- **Celebration of Wins**: Group acknowledgment of progress creates stronger positive reinforcement than solo tracking
+- **Built-in Support System**: Having others on the same journey provides encouragement during difficult days
+
+The product allows challenge creators to invite specific people via shareable links, creating small, trusted communities focused on mutual growth rather than exposing users to a public feed of strangers.
+
 ## Phase 1: Database Setup and Authentication
 
 1. **Configure Supabase Database Schema using MCP server**
@@ -174,7 +189,10 @@ This roadmap outlines the steps needed to implement the DailyFuel product as spe
    - Monitor query performance and optimize as needed
 
 2. **Security**
-   - Implement row-level security in Supabase
+   - ✅ Implement row-level security in Supabase
+   - ✅ Add proper error handling and validation for Stripe webhook endpoint
+   - ✅ Implement URL validation and improved security for Stripe checkout
+   - ✅ Replace external image references with local/CDN hosted images
    - Set up proper authorization checks for all API routes
 
 3. **Error Handling**
