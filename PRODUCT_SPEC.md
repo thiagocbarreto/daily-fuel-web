@@ -43,8 +43,8 @@ DailyFuel helps people build consistency by joining simple, day-based challenges
 ---
 
 ### 🧑‍💻 Create Challenge Flow
-1. Subscriber clicks “Create Challenge”
-2. Fills form: title, description, duration, daily goal
+1. Subscriber clicks "Create Challenge"
+2. Fills form: title, description, duration
 3. Challenge is saved to DB
 4. Shareable link is shown (`/challenge/[id]`)
 
@@ -59,7 +59,7 @@ DailyFuel helps people build consistency by joining simple, day-based challenges
 ---
 
 ### 💳 Subscription Flow
-1. User clicks “Upgrade”
+1. User clicks "Upgrade"
 2. Redirected to Stripe Checkout
 3. On payment success:
    - Stripe webhook updates user row in Supabase
@@ -123,10 +123,9 @@ All tables use UUIDs as primary keys.
 | `creator_id`  | uuid    | FK to `users.id`                  |
 | `title`       | text    | Challenge title                   |
 | `description` | text    | Optional long text                |
-| `daily_goal`  | text    | What user is expected to do daily |
 | `duration_days`| int    | 7, 14, 30, etc.                   |
 | `start_date`  | date    | When challenge begins             |
-| `created_at`  | timestamp | Default now()                  |
+| `created_at`  | timestamp | Default now()                   |
 
 ---
 

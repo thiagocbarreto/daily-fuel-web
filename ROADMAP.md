@@ -34,7 +34,6 @@ The product allows challenge creators to invite specific people via shareable li
      - `creator_id` (uuid, FK to users.id)
      - `title` (text)
      - `description` (text)
-     - `daily_goal` (text)
      - `duration_days` (integer)
      - `start_date` (date)
      - `created_at` (timestamp)

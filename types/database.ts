@@ -58,7 +58,6 @@ export interface Database {
           creator_id: string
           title: string
           description: string | null
-          daily_goal: string
           duration_days: number
           start_date: string
           created_at: string
@@ -68,7 +67,6 @@ export interface Database {
           creator_id: string
           title: string
           description?: string | null
-          daily_goal: string
           duration_days: number
           start_date: string
           created_at?: string
@@ -78,7 +76,6 @@ export interface Database {
           creator_id?: string
           title?: string
           description?: string | null
-          daily_goal?: string
           duration_days?: number
           start_date?: string
           created_at?: string

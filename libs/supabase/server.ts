@@ -3,17 +3,7 @@ import { cookies } from "next/headers";
 import { Database } from "@/types";
 
 export function createClient() {
-  let cookieStore;
-  try {
-    cookieStore = cookies();
-  } catch (error) {
-    console.warn('Cookies are not available in this environment. Using fallback.');
-    cookieStore = {
-      getAll: (): any[] => [],
-      setAll: () => {},
-      set: (name: string, value: string, options?: any) => {},
-    };
-  }
+  const cookieStore = cookies();
 
   return createServerClient<Database>(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,

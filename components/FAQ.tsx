@@ -40,7 +40,7 @@ const faqList: FAQItemProps[] = [
         <ol className="list-decimal pl-4">
           <li>Go to your dashboard</li>
           <li>Click &quot;Create Challenge&quot;</li>
-          <li>Enter the title, description, daily goal, and duration</li>
+          <li>Enter the title, description, and duration</li>
           <li>Share the generated link with anyone you want to join</li>
         </ol>
       </div>
