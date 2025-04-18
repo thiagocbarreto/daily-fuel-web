@@ -23,7 +23,7 @@ export default async function Dashboard() {
     .single();
 
   // Fetch challenges created by the user
-  const { data: challenges } = await supabase
+  const { data: createdChallenges } = await supabase
     .from("challenges")
     .select(`
       *,
@@ -32,17 +32,38 @@ export default async function Dashboard() {
     .eq("creator_id", session?.user?.id)
     .order("start_date", { ascending: false });
 
+  // Fetch challenges joined by the user (including ones they created)
+  const { data: joinedChallenges } = await supabase
+    .from("challenge_participants")
+    .select(`
+      challenge:challenges(
+        *,
+        challenge_participants(count)
+      )
+    `)
+    .eq("user_id", session?.user?.id)
+    .order("created_at", { ascending: false });
+
   // Sort challenges by status: active first, then upcoming, then ended
-  const sortedChallenges = (challenges || []).sort((a, b) => {
-    const aStatus = getChallengeStatus(a.start_date, a.duration_days);
-    const bStatus = getChallengeStatus(b.start_date, b.duration_days);
-    
-    if (aStatus === 'active' && bStatus !== 'active') return -1;
-    if (bStatus === 'active' && aStatus !== 'active') return 1;
-    
-    // If both are active or both are not active, sort by start date
-    return new Date(b.start_date).getTime() - new Date(a.start_date).getTime();
-  });
+  const sortChallenges = (challenges: any[]) => {
+    return challenges.sort((a, b) => {
+      const aStatus = getChallengeStatus(a.start_date, a.duration_days);
+      const bStatus = getChallengeStatus(b.start_date, b.duration_days);
+      
+      if (aStatus === 'active' && bStatus !== 'active') return -1;
+      if (bStatus === 'active' && aStatus !== 'active') return 1;
+      
+      // If both are active or both are not active, sort by start date
+      return new Date(b.start_date).getTime() - new Date(a.start_date).getTime();
+    });
+  };
+
+  const sortedCreatedChallenges = sortChallenges(createdChallenges || []);
+  const sortedJoinedChallenges = sortChallenges(
+    (joinedChallenges || [])
+      .map(entry => entry.challenge)
+      .filter(Boolean) // Remove any null entries
+  );
 
   return (
     <main className="min-h-screen p-8 pb-24">
@@ -54,14 +75,42 @@ export default async function Dashboard() {
         </div>
         
         <div className="space-y-6">
-          <h2 className="text-xl font-semibold">Created by me</h2>
-          {sortedChallenges.length === 0 ? (
+          <h2 className="text-xl font-semibold">Created</h2>
+          {sortedCreatedChallenges.length === 0 ? (
             <p className="text-gray-500 text-center py-8">
               You haven&apos;t created any challenges yet. Create your first challenge to get started!
             </p>
           ) : (
             <div className="grid gap-4">
-              {sortedChallenges.map((challenge) => {
+              {sortedCreatedChallenges.map((challenge) => {
+                const status = getChallengeStatus(challenge.start_date, challenge.duration_days);
+                const statusColorClass = getStatusColor(status);
+
+                return (
+                  <ChallengeCard
+                    key={challenge.id}
+                    title={challenge.title}
+                    startDate={challenge.start_date}
+                    durationDays={challenge.duration_days}
+                    challengersCount={challenge.challenge_participants[0]?.count ?? 0}
+                    status={status}
+                    statusColorClass={statusColorClass}
+                  />
+                );
+              })}
+            </div>
+          )}
+        </div>
+
+        <div className="space-y-6">
+          <h2 className="text-xl font-semibold">Joined</h2>
+          {sortedJoinedChallenges.length === 0 ? (
+            <p className="text-gray-500 text-center py-8">
+              You haven&apos;t joined any challenges yet. Ask someone to share their challenge link with you to join! 🔗
+            </p>
+          ) : (
+            <div className="grid gap-4">
+              {sortedJoinedChallenges.map((challenge) => {
                 const status = getChallengeStatus(challenge.start_date, challenge.duration_days);
                 const statusColorClass = getStatusColor(status);
 

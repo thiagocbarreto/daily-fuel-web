@@ -1,7 +1,7 @@
 'use client';
 
 import { formatDate } from "@/lib/utils";
-import { getChallengeStatus, getStatusColor, type ChallengeStatus } from "@/lib/challenge-utils";
+import { type ChallengeStatus } from "@/lib/challenge-utils";
 
 interface ChallengeCardProps {
   title: string;
