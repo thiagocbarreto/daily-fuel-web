@@ -160,6 +160,20 @@ const ButtonAccount = () => {
                       </svg>
                       Billing
                     </button>
+                    <a
+                      href={`mailto:support@dailyfuel.app?subject=${encodeURIComponent("Daily Fuel - Support Request")}&body=${encodeURIComponent("Type: [Bug Report/Feature Request]\n\nDescription:\n")}`}
+                      className="flex items-center gap-2 hover:bg-base-300 duration-200 py-1.5 px-4 w-full rounded-lg font-medium"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                        className="w-5 h-5"
+                      >
+                        <path d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6zm0 16a3 3 0 01-3-3h6a3 3 0 01-3 3z" />
+                      </svg>
+                      Support & Feedback
+                    </a>
                     <button
                       className="flex items-center gap-2 hover:bg-error/20 hover:text-error duration-200 py-1.5 px-4 w-full rounded-lg font-medium"
                       onClick={handleSignOut}
