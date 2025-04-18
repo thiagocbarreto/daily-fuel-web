@@ -89,6 +89,7 @@ export default async function Dashboard() {
                 return (
                   <ChallengeCard
                     key={challenge.id}
+                    id={challenge.id}
                     title={challenge.title}
                     startDate={challenge.start_date}
                     durationDays={challenge.duration_days}
@@ -117,6 +118,7 @@ export default async function Dashboard() {
                 return (
                   <ChallengeCard
                     key={challenge.id}
+                    id={challenge.id}
                     title={challenge.title}
                     startDate={challenge.start_date}
                     durationDays={challenge.duration_days}
