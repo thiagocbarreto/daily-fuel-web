@@ -4,6 +4,7 @@ import { formatDate } from "@/lib/utils";
 import { type ChallengeStatus } from "@/lib/challenge-utils";
 import Link from "next/link";
 import { useState, type MouseEvent } from "react";
+import { useTopLoader } from 'nextjs-toploader';
 
 interface ChallengeCardProps {
   id: string;
@@ -27,6 +28,7 @@ export default function ChallengeCard({
   isOwned = false,
 }: ChallengeCardProps) {
   const [copied, setCopied] = useState(false);
+  const loader = useTopLoader();
 
   const handleShare = async (e: MouseEvent) => {
     e.preventDefault(); // Prevent the Link navigation
@@ -34,7 +36,8 @@ export default function ChallengeCard({
       const joinUrl = `${window.location.origin}/challenges/${id}/join`;
       await navigator.clipboard.writeText(joinUrl);
       setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
+      setTimeout(() => loader.done(), 100);
+      setTimeout(() => setCopied(false), 1500);
     } catch (err) {
       console.error('Failed to copy URL:', err);
     }
