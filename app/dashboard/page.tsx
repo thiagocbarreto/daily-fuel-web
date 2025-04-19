@@ -33,16 +33,14 @@ export default async function Dashboard() {
     .order("start_date", { ascending: false });
 
   // Fetch challenges joined by the user (including ones they created)
-  const { data: joinedChallenges } = await supabase
+  const { data: joinedChallenges, error } = await supabase
     .from("challenge_participants")
     .select(`
-      challenge:challenges(
-        *,
-        challenge_participants(count)
-      )
+      joined_at,
+      challenge:challenges(*)
     `)
     .eq("user_id", session?.user?.id)
-    .order("created_at", { ascending: false });
+    .order("joined_at", { ascending: false });
 
   // Sort challenges by status: active first, then upcoming, then ended
   const sortChallenges = (challenges: any[]) => {
@@ -59,11 +57,7 @@ export default async function Dashboard() {
   };
 
   const sortedCreatedChallenges = sortChallenges(createdChallenges || []);
-  const sortedJoinedChallenges = sortChallenges(
-    (joinedChallenges || [])
-      .map(entry => entry.challenge)
-      .filter(Boolean) // Remove any null entries
-  );
+  const sortedJoinedChallenges = joinedChallenges?.map(entry => entry.challenge) || [];
 
   return (
     <main className="min-h-screen p-8 pb-24">
@@ -96,6 +90,7 @@ export default async function Dashboard() {
                     challengersCount={challenge.challenge_participants[0]?.count ?? 0}
                     status={status}
                     statusColorClass={statusColorClass}
+                    isOwned={true}
                   />
                 );
               })}
@@ -122,7 +117,7 @@ export default async function Dashboard() {
                     title={challenge.title}
                     startDate={challenge.start_date}
                     durationDays={challenge.duration_days}
-                    challengersCount={challenge.challenge_participants[0]?.count ?? 0}
+                    // challengersCount={challenge.challenge_participants[0]?.count ?? 0}
                     status={status}
                     statusColorClass={statusColorClass}
                   />

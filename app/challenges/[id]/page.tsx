@@ -4,6 +4,7 @@ import { notFound, redirect } from "next/navigation";
 import { format } from "date-fns";
 import Link from "next/link";
 import config from "@/config";
+import ShareJoinLink from "@/components/ShareJoinLink";
 
 export const dynamic = "force-dynamic";
 
@@ -22,12 +23,12 @@ export default async function ChallengePage({
     redirect(config.auth.loginUrl);
   }
 
-  // Fetch challenge details
+  // Fetch challenge details with creator info and check if user is participant
   const { data: challenge } = await supabase
     .from("challenges")
     .select(`
       *,
-      challenge_participants: challenge_participants(count)
+      creator:users!challenges_creator_id_fkey(name)
     `)
     .eq("id", params.id)
     .single();
@@ -35,6 +36,13 @@ export default async function ChallengePage({
   if (!challenge) {
     notFound();
   }
+
+  // Fetch participant count
+  const { data: participantCount } = await supabase
+    .from("challenge_participants")
+    .select("count")
+    .eq("challenge_id", params.id)
+    .single();
 
   const status = getChallengeStatus(challenge.start_date, challenge.duration_days);
   const statusColorClass = getStatusColor(status);
@@ -47,6 +55,9 @@ export default async function ChallengePage({
   // Format dates with day of the week
   const formattedStartDate = format(startDate, "EEEE, MMMM d, yyyy");
   const formattedEndDate = format(endDate, "EEEE, MMMM d, yyyy");
+
+  // Check if current user is the creator
+  const isCreator = challenge.creator_id === user.id;
 
   return (
     <main className="min-h-screen p-8 pb-24">
@@ -74,7 +85,12 @@ export default async function ChallengePage({
 
         <div className="bg-white rounded-lg shadow-sm border p-8">
           <div className="flex justify-between items-start mb-6">
-            <h1 className="text-3xl font-bold text-gray-900">{challenge.title}</h1>
+            <div>
+              <h1 className="text-3xl font-bold text-gray-900">{challenge.title}</h1>
+              <p className="text-sm text-gray-500 mt-1">
+                Created by {challenge.creator.name} {isCreator ? "(you)" : ""}
+              </p>
+            </div>
             <span
               className={`px-3 py-1 rounded-full text-sm font-medium capitalize ${statusColorClass}`}
             >
@@ -107,10 +123,14 @@ export default async function ChallengePage({
                 <div className="space-y-2">
                   <h3 className="text-sm font-medium text-gray-500">Challengers</h3>
                   <p className="text-base text-gray-900">
-                    {challenge.challenge_participants[0]?.count ?? 0} participants
+                    {participantCount?.count ?? 0} participant{participantCount?.count === 1 ? "" : "s"}
                   </p>
                 </div>
               </div>
+            </div>
+
+            <div className="border-t pt-6 flex gap-4 justify-end">
+              <ShareJoinLink challengeId={params.id} />
             </div>
           </div>
         </div>

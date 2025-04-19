@@ -6,6 +6,7 @@ import ClientLayout from "@/components/LayoutClient";
 import config from "@/config";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
+import AuthListener from "@/components/AuthListener";
 
 const font = Inter({ subsets: ["latin"] });
 
@@ -28,6 +29,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
 			className={font.className}
 		>
 			<body>
+				<AuthListener />
 				{/* ClientLayout contains all the client wrappers (Crisp chat support, toast messages, tooltips, etc.) */}
 				<ClientLayout>{children}</ClientLayout>
 				<Toaster />

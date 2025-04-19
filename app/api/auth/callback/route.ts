@@ -8,6 +8,7 @@ export const dynamic = "force-dynamic";
 export async function GET(req: NextRequest) {
   const requestUrl = new URL(req.url);
   const code = requestUrl.searchParams.get("code");
+  const returnUrl = requestUrl.searchParams.get("returnUrl");
 
   if (code) {
     const supabase = createClient();
@@ -15,5 +16,10 @@ export async function GET(req: NextRequest) {
   }
 
   // URL to redirect to after sign in process completes
-  return NextResponse.redirect(requestUrl.origin + config.auth.callbackUrl);
+  // If returnUrl is present and starts with /, use it; otherwise fall back to default callback URL
+  const redirectTo = returnUrl?.startsWith('/') 
+    ? requestUrl.origin + returnUrl
+    : requestUrl.origin + config.auth.callbackUrl;
+
+  return NextResponse.redirect(redirectTo);
 }

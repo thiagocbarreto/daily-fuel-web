@@ -1,5 +1,6 @@
 "use client";
 
+import config from "@/config";
 import { useRef, useState } from "react";
 import type { JSX } from "react";
 
@@ -26,7 +27,7 @@ const faqList: FAQItemProps[] = [
     question: "What's the difference between free and paid plans?",
     answer: (
       <p>
-        Free users can join challenges and track their progress but cannot create challenges. Subscribers ($6/month or $54/year) can create unlimited challenges and share them with anyone, plus get access to participation statistics.
+        Free users can join challenges and track their progress but cannot create challenges. Subscribers (${config.stripe.plans[0].price}/month or ${config.stripe.plans[1].price}/year) can create unlimited challenges and share them with anyone, plus get access to participation statistics.
       </p>
     ),
   },
@@ -58,7 +59,7 @@ const faqList: FAQItemProps[] = [
     question: "How do I join someone else's challenge?",
     answer: (
       <div className="space-y-2 leading-relaxed">
-        <p>Simply click the challenge link they shared with you. If you&apos;re not logged in, you&apos;ll be prompted to sign in or create an account. Once logged in, you&apos;ll automatically be joined to the challenge and can start tracking your progress.</p>
+        <p>Simply click the challenge link they shared with you. If you&apos;re not logged in, you&apos;ll be prompted to sign in or create an account. Once logged in, you&apos;ll be back on the join page so that you can start tracking your progress.</p>
       </div>
     ),
   },
