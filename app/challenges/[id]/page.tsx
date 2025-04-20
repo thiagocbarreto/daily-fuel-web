@@ -5,8 +5,27 @@ import { format } from "date-fns";
 import Link from "next/link";
 import config from "@/config";
 import ShareJoinLink from "@/components/ShareJoinLink";
+import UserProgressCalendar from "@/components/UserProgressCalendar";
 
 export const dynamic = "force-dynamic";
+
+interface DailyLog {
+  id: string;
+  user_id: string;
+  challenge_id: string;
+  date: string;
+  created_at: string;
+}
+
+interface User {
+  id: string;
+  name: string;
+  email: string;
+}
+
+interface Participant {
+  user: User;
+}
 
 export default async function ChallengePage({
   params,
@@ -16,14 +35,14 @@ export default async function ChallengePage({
   const supabase = createClient();
 
   const {
-    data: { user },
-  } = await supabase.auth.getUser();
+    data: { session },
+  } = await supabase.auth.getSession();
 
-  if (!user) {
+  if (!session) {
     redirect(config.auth.loginUrl);
   }
 
-  // Fetch challenge details with creator info and check if user is participant
+  // Fetch challenge details
   const { data: challenge } = await supabase
     .from("challenges")
     .select(`
@@ -36,6 +55,30 @@ export default async function ChallengePage({
   if (!challenge) {
     notFound();
   }
+
+  // Fetch participants with user details
+  const { data: participants } = await supabase
+    .from("challenge_participants")
+    .select(`
+      user:users (
+        id,
+        name,
+        email
+      )
+    `)
+    .eq("challenge_id", params.id) as { data: Participant[] };
+
+  // Fetch all daily logs for this challenge
+  const { data: dailyLogs } = await supabase
+    .from("daily_logs")
+    .select(`
+      id,
+      date,
+      user_id,
+      created_at
+    `)
+    .eq("challenge_id", params.id)
+    .order('date', { ascending: true });
 
   // Fetch participant count
   const { data: participantCount } = await supabase
@@ -57,7 +100,7 @@ export default async function ChallengePage({
   const formattedEndDate = format(endDate, "EEEE, MMMM d, yyyy");
 
   // Check if current user is the creator
-  const isCreator = challenge.creator_id === user.id;
+  const isCreator = challenge.creator_id === session.user.id;
 
   return (
     <main className="min-h-screen p-8 pb-24">
@@ -91,11 +134,14 @@ export default async function ChallengePage({
                 Created by {challenge.creator.name} {isCreator ? "(you)" : ""}
               </p>
             </div>
-            <span
-              className={`px-3 py-1 rounded-full text-sm font-medium capitalize ${statusColorClass}`}
-            >
-              {status}
-            </span>
+            <div className="flex flex-col items-end gap-3">
+              <span
+                className={`px-3 py-1 rounded-full text-sm font-medium capitalize ${statusColorClass}`}
+              >
+                {status}
+              </span>
+              <ShareJoinLink challengeId={params.id} />
+            </div>
           </div>
 
           <div className="space-y-6">
@@ -128,10 +174,30 @@ export default async function ChallengePage({
                 </div>
               </div>
             </div>
+          </div>
+        </div>
 
-            <div className="border-t pt-6 flex gap-4 justify-end">
-              <ShareJoinLink challengeId={params.id} />
-            </div>
+        {/* Progress Section */}
+        <div className="bg-white rounded-lg shadow-sm border p-8">
+          <h2 className="text-xl font-semibold mb-6">Progress</h2>
+          <div className="grid gap-6">
+            {participants?.map((participant) => {
+              // Filter logs for this participant
+              const userLogs = dailyLogs?.filter(
+                log => log.user_id === participant.user.id
+              ) || [];
+
+              return (
+                <UserProgressCalendar
+                  key={participant.user.id}
+                  startDate={new Date(challenge.start_date)}
+                  durationDays={challenge.duration_days}
+                  dailyLogs={userLogs}
+                  userName={participant.user.name}
+                  isAuthUser={participant.user.id === session.user.id}
+                />
+              );
+            })}
           </div>
         </div>
       </div>

@@ -129,19 +129,22 @@ export interface Database {
           challenge_id: string
           user_id: string
           date: string
+          created_at: string
         }
         Insert: {
           id?: string
           challenge_id: string
           user_id: string
           date: string
+          created_at?: string
         }
-        Update: {
-          id?: string
-          challenge_id?: string
-          user_id?: string
-          date?: string
-        }
+        // Update: {
+        //   id?: string
+        //   challenge_id?: string
+        //   user_id?: string
+        //   date?: string
+        //   created_at?: string
+        // }
         Relationships: [
           {
             foreignKeyName: "daily_logs_challenge_id_fkey"

@@ -1,7 +1,9 @@
 1. Create main features:
-   1. view challenges details v2 (habitshare-like)
-      1. view members of the challenge (everyone can see)
-      2. view each member's logs/progress (everyone can see)
+   1. view challenges details v2 (habitshare-like) that everyone can see (view each member's logs/progress
+      1. Create a new section below the main card that lists for each user:
+         - their name
+         - a calendar around the days of the challenge (create a separate component, shadcn's calendar component will help you)
+         - if a given day is logged for the user, put it on color and a circle around it
    2. challengers
       1. confirm day completion
       2. remove day completion
