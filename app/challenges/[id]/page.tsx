@@ -93,7 +93,9 @@ export default async function ChallengePage({
   // Calculate end date
   const startDate = new Date(challenge.start_date);
   const endDate = new Date(startDate);
-  endDate.setDate(endDate.getDate() + challenge.duration_days);
+  startDate.setMinutes(startDate.getMinutes() + new Date().getTimezoneOffset());
+  endDate.setDate(endDate.getDate() + challenge.duration_days - 1);
+  endDate.setMinutes(endDate.getMinutes() + new Date().getTimezoneOffset());
 
   // Format dates with day of the week
   const formattedStartDate = format(startDate, "EEEE, MMMM d, yyyy");
@@ -181,23 +183,28 @@ export default async function ChallengePage({
         <div className="bg-white rounded-lg shadow-sm border p-8">
           <h2 className="text-xl font-semibold mb-6">Progress</h2>
           <div className="grid gap-6">
-            {participants?.map((participant) => {
-              // Filter logs for this participant
-              const userLogs = dailyLogs?.filter(
-                log => log.user_id === participant.user.id
-              ) || [];
+            {participants && participants.length > 0 ? (
+              participants.map((participant) => {
+                // Filter logs for this participant
+                const userLogs = dailyLogs?.filter(
+                  log => log.user_id === participant.user.id
+                ) || [];
 
-              return (
-                <UserProgressCalendar
-                  key={participant.user.id}
-                  startDate={new Date(challenge.start_date)}
-                  durationDays={challenge.duration_days}
-                  dailyLogs={userLogs}
-                  userName={participant.user.name}
-                  isAuthUser={participant.user.id === session.user.id}
-                />
-              );
-            })}
+                return (
+                  <UserProgressCalendar
+                    key={participant.user.id}
+                    startDate={startDate}
+                    durationDays={challenge.duration_days}
+                    dailyLogs={userLogs}
+                    userName={participant.user.name}
+                    authUserId={participant.user.id === session.user.id ? participant.user.id : undefined}
+                    challengeId={params.id}
+                  />
+                );
+              })
+            ) : (
+              <p className="text-gray-500 text-center py-4">No participants yet</p>
+            )}
           </div>
         </div>
       </div>
