@@ -138,13 +138,13 @@ export interface Database {
           date: string
           created_at?: string
         }
-        // Update: {
-        //   id?: string
-        //   challenge_id?: string
-        //   user_id?: string
-        //   date?: string
-        //   created_at?: string
-        // }
+        Update: {
+          id?: string
+          challenge_id?: string
+          user_id?: string
+          date?: string
+          created_at?: string
+        }
         Relationships: [
           {
             foreignKeyName: "daily_logs_challenge_id_fkey"

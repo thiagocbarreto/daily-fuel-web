@@ -4,6 +4,16 @@ import CreateChallengeDialog from "@/components/CreateChallengeDialog";
 import ChallengeCard from "@/components/ChallengeCard";
 import { createClient } from "@/libs/supabase/server";
 
+interface JoinedChallenge {
+  joined_at: string;
+  challenge: {
+    id: string;
+    title: string;
+    start_date: string;
+    duration_days: number;
+  };
+}
+
 export const dynamic = "force-dynamic";
 
 // This is a private page: It's protected by the layout.js component which ensures the user is authenticated.
@@ -40,7 +50,7 @@ export default async function Dashboard() {
       challenge:challenges(*)
     `)
     .eq("user_id", session?.user?.id)
-    .order("joined_at", { ascending: false });
+    .order("joined_at", { ascending: false }) as { data: JoinedChallenge[], error: any };
 
   // Sort challenges by status: active first, then upcoming, then ended
   const sortChallenges = (challenges: any[]) => {
@@ -57,6 +67,7 @@ export default async function Dashboard() {
   };
 
   const sortedCreatedChallenges = sortChallenges(createdChallenges || []);
+
   const sortedJoinedChallenges = joinedChallenges?.map(entry => entry.challenge) || [];
 
   return (
