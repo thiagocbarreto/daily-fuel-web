@@ -83,7 +83,7 @@ export default function UserProgressCalendar({
     }
   };
 
-  const today = startOfDay(new Date());
+  const today = addMinutes(startOfDay(new Date()), tzOffset);
 
   return (
     <div className={`bg-white rounded-lg shadow-sm border p-6 ${authUserId ? 'border-orange-200' : ''}`}>
