@@ -10,23 +10,29 @@ export default function AuthListener(): null {
   useEffect(() => {
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (event: AuthChangeEvent, session: Session | null) => {
+    } = supabase.auth.onAuthStateChange((event: AuthChangeEvent, session: Session | null) => {
       if ((event === 'SIGNED_IN' || event === 'INITIAL_SESSION') && session?.user) {
-        // Check if user exists in the users table
-        const { data: existingUser } = await supabase
-          .from('users')
-          .select('id')
-          .eq('id', session.user.id)
-          .single();
+        (async () => {
+          try {
+            // Check if user exists in the users table
+            const { data: existingUser } = await supabase
+              .from('users')
+              .select('id')
+            .eq('id', session.user.id)
+            .single();
 
-        // If user doesn't exist, create a new record
-        if (!existingUser) {
-          await supabase.from('users').insert({
-            id: session.user.id,
-            email: session.user.email,
-            name: session.user.user_metadata?.full_name || session.user.email?.split('@')[0],
-          });
-        }
+            // If user doesn't exist, create a new record
+            if (!existingUser) {
+              await supabase.from('users').insert({
+                id: session.user.id,
+                email: session.user.email,
+                name: session.user.user_metadata?.full_name || session.user.email?.split('@')[0],
+              });
+            }
+          } catch (error) {
+            console.error('Error creating/checking user:', error);
+          }
+        })();
       }
     });
 
