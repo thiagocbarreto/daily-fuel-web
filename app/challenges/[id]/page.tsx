@@ -1,11 +1,12 @@
 import { getChallengeStatus, getStatusColor } from "@/lib/challenge-utils";
 import { createClient } from "@/libs/supabase/server";
 import { notFound, redirect } from "next/navigation";
-import { format } from "date-fns";
+import { addMinutes, format } from "date-fns";
 import Link from "next/link";
 import config from "@/config";
 import ShareJoinLink from "@/components/ShareJoinLink";
 import UserProgressCalendar from "@/components/UserProgressCalendar";
+import { cookies } from "next/headers";
 
 export const dynamic = "force-dynamic";
 
@@ -32,6 +33,10 @@ export default async function ChallengePage({
 }: {
   params: { id: string };
 }) {
+      
+  const tzOffset = Number(cookies().get('tzOffset')?.value || '0');
+  console.log('------> tzOffset', tzOffset);
+  
   const supabase = createClient();
 
   const {
@@ -91,11 +96,14 @@ export default async function ChallengePage({
   const statusColorClass = getStatusColor(status);
   
   // Calculate end date
-  const startDate = new Date(challenge.start_date);
-  const endDate = new Date(startDate);
-  startDate.setMinutes(startDate.getMinutes() + new Date().getTimezoneOffset());
+  let startDate = new Date(challenge.start_date);
+  console.log('------> startDate raw', startDate);
+  let endDate = new Date(startDate);
+  startDate = addMinutes(startDate, new Date().getTimezoneOffset());
   endDate.setDate(endDate.getDate() + challenge.duration_days - 1);
-  endDate.setMinutes(endDate.getMinutes() + new Date().getTimezoneOffset());
+  endDate = addMinutes(endDate, new Date().getTimezoneOffset());
+
+  console.log('------> startDate', startDate);
 
   // Format dates with day of the week
   const formattedStartDate = format(startDate, "EEEE, MMMM d, yyyy");
@@ -130,20 +138,20 @@ export default async function ChallengePage({
 
         <div className="bg-white rounded-lg shadow-sm border p-8">
           <div className="flex justify-between items-start mb-6">
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900">{challenge.title}</h1>
-              <p className="text-sm text-gray-500 mt-1">
-                Created by {challenge.creator.name} {isCreator ? "(you)" : ""}
-              </p>
-            </div>
-            <div className="flex flex-col items-end gap-3">
-              <span
-                className={`px-3 py-1 rounded-full text-sm font-medium capitalize ${statusColorClass}`}
-              >
-                {status}
-              </span>
+            <div className="space-y-3">
+              <div>
+                <h1 className="text-3xl font-bold text-gray-900">{challenge.title}</h1>
+                <p className="text-sm text-gray-500 mt-1">
+                  Created by {challenge.creator.name} {isCreator ? "(you)" : ""}
+                </p>
+              </div>
               <ShareJoinLink challengeId={params.id} />
             </div>
+            <span
+              className={`px-3 py-1 rounded-full text-sm font-medium capitalize ${statusColorClass}`}
+            >
+              {status}
+            </span>
           </div>
 
           <div className="space-y-6">
@@ -199,6 +207,7 @@ export default async function ChallengePage({
                     userName={participant.user.name}
                     authUserId={participant.user.id === session.user.id ? participant.user.id : undefined}
                     challengeId={params.id}
+                    tzOffset={tzOffset}
                   />
                 );
               })

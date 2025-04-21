@@ -18,7 +18,7 @@ export default function ShareJoinLink({ challengeId }: { challengeId: string }) 
   return (
     <button
       onClick={handleShare}
-      className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+      className="inline-flex items-center px-4 py-2 rounded-md shadow-sm text-sm font-medium text-white bg-orange-500 hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 transition-colors"
     >
       <svg
         className="w-5 h-5 mr-2"

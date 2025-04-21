@@ -1,6 +1,6 @@
 'use client';
 
-import { addDays, format, isBefore, isAfter, isSameDay, startOfDay } from "date-fns";
+import { addDays, format, isBefore, isAfter, isSameDay, startOfDay, addMinutes } from "date-fns";
 import { createClient } from "@/libs/supabase/client";
 import { useState } from "react";
 import { Loader2 } from "lucide-react";
@@ -12,6 +12,7 @@ interface UserProgressCalendarProps {
   userName: string;
   challengeId: string;
   authUserId?: string;
+  tzOffset: number;
 }
 
 export default function UserProgressCalendar({ 
@@ -20,7 +21,8 @@ export default function UserProgressCalendar({
   dailyLogs,
   userName,
   authUserId,
-  challengeId
+  challengeId,
+  tzOffset
 }: UserProgressCalendarProps) {
   const [loading, setLoading] = useState<string | null>(null);
   const [logs, setLogs] = useState(dailyLogs);
@@ -42,13 +44,10 @@ export default function UserProgressCalendar({
     
     try {
       const existingLog = logs.find(log => {
-        const logDate = new Date(log.date);
-        logDate.setMinutes(logDate.getMinutes() + new Date().getTimezoneOffset());
+        const logDate = addMinutes(new Date(log.date), tzOffset);
         return isSameDay(logDate, date);
       });
 
-      console.log('------> existingLog', existingLog);
-      
       if (existingLog) {
         // Remove log
         const { error } = await supabase
@@ -86,8 +85,6 @@ export default function UserProgressCalendar({
 
   const today = startOfDay(new Date());
 
-  console.log('------> logs', logs);
-
   return (
     <div className={`bg-white rounded-lg shadow-sm border p-6 ${authUserId ? 'border-orange-200' : ''}`}>
       <h3 className="font-medium text-gray-900 mb-4">{userName}</h3>
@@ -107,8 +104,7 @@ export default function UserProgressCalendar({
         {/* Challenge days */}
         {challengeDates.map((date) => {
           const isLogged = logs.some(log => {
-            const logDate = new Date(log.date);
-            logDate.setMinutes(logDate.getMinutes() + new Date().getTimezoneOffset());
+            const logDate = addMinutes(new Date(log.date), tzOffset);
             return isSameDay(logDate, date);
           });
           const isLoading = loading === date.toISOString();

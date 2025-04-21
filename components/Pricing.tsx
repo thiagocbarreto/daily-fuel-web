@@ -99,7 +99,7 @@ const Pricing = () => {
               </div>
               <div className="flex gap-2">
                 <p className={`text-5xl tracking-tight font-extrabold`}>
-                  $6
+                  ${config.stripe.plans[0].price}
                 </p>
                 <div className="flex flex-col justify-end mb-[4px]">
                   <p className="text-xs text-base-content/60 uppercase font-semibold">
@@ -208,12 +208,12 @@ const Pricing = () => {
                   <p className="relative">
                     <span className="absolute bg-base-content h-[1.5px] inset-x-0 top-[53%]"></span>
                     <span className="text-base-content/80">
-                      $72
+                      ${config.stripe.plans[1].priceAnchor}
                     </span>
                   </p>
                 </div>
                 <p className={`text-5xl tracking-tight font-extrabold`}>
-                  $48
+                  ${config.stripe.plans[1].price}
                 </p>
                 <div className="flex flex-col justify-end mb-[4px]">
                   <p className="text-xs text-base-content/60 uppercase font-semibold">

@@ -57,8 +57,6 @@ export default async function ChallengeJoinPage({
   const status = getChallengeStatus(challenge.start_date, challenge.duration_days);
   const statusColorClass = getStatusColor(status);
 
-  console.log("Challenge status:", status);
-
   // If user is authenticated, check if they're already a participant
   const isParticipant = challengeWithUserParticipant?.challenge_participants.some(
     (p: any) => p.user_id === user?.id
@@ -101,6 +99,7 @@ export default async function ChallengeJoinPage({
       <div className="flex-1">
         <div className="max-w-xl mx-auto">
           <div className="bg-white rounded-lg shadow-sm border p-8">
+            <h2 className="text-xl font-medium text-gray-500 mb-1">Join Challenge</h2>
             <div className="flex justify-between items-start mb-6">
               <div>
                 <h1 className="text-3xl font-bold text-gray-900">{challenge.title}</h1>
