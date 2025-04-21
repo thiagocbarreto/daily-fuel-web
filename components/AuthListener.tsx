@@ -12,7 +12,9 @@ export default function AuthListener(): null {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((event: AuthChangeEvent, session: Session | null) => {
       if ((event === 'SIGNED_IN' || event === 'INITIAL_SESSION') && session?.user) {
-        (async () => {
+        setTimeout(async () => {
+          // await on other Supabase function here
+          // this runs right after the callback has finished to avoid race condition
           try {
             // Check if user exists in the users table
             const { data: existingUser } = await supabase
@@ -32,7 +34,7 @@ export default function AuthListener(): null {
           } catch (error) {
             console.error('Error creating/checking user:', error);
           }
-        })();
+        }, 0);
       }
     });
 
