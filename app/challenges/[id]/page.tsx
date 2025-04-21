@@ -6,6 +6,7 @@ import Link from "next/link";
 import config from "@/config";
 import ShareJoinLink from "@/components/ShareJoinLink";
 import UserProgressCalendar from "@/components/UserProgressCalendar";
+import ButtonAccount from "@/components/ButtonAccount";
 import { cookies } from "next/headers";
 
 export const dynamic = "force-dynamic";
@@ -35,7 +36,6 @@ export default async function ChallengePage({
 }) {
       
   const tzOffset = Number(cookies().get('tzOffset')?.value || '0');
-  console.log('------> tzOffset', tzOffset);
   
   const supabase = createClient();
 
@@ -97,13 +97,10 @@ export default async function ChallengePage({
   
   // Calculate end date
   let startDate = new Date(challenge.start_date);
-  console.log('------> startDate raw', startDate);
   let endDate = new Date(startDate);
   startDate = addMinutes(startDate, tzOffset);
   endDate.setDate(endDate.getDate() + challenge.duration_days - 1);
   endDate = addMinutes(endDate, tzOffset);
-
-  console.log('------> startDate', startDate);
 
   // Format dates with day of the week
   const formattedStartDate = format(startDate, "EEEE, MMMM d, yyyy");
@@ -115,6 +112,7 @@ export default async function ChallengePage({
   return (
     <main className="min-h-screen p-8 pb-24">
       <div className="max-w-2xl mx-auto space-y-6">
+        <ButtonAccount />
         <Link
           href="/dashboard"
           className="inline-flex items-center text-sm text-gray-500 hover:text-gray-700 transition-colors"
