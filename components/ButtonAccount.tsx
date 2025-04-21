@@ -3,13 +3,22 @@
 
 import { createClient } from "@/libs/supabase/server";
 import ButtonAccountInner from "./ButtonAccountInner";
+import { redirect } from "next/navigation";
 
 const handleSignOut = async () => {
   "use server";
   
-  const supabase = createClient();
-  await supabase.auth.signOut();
-  window.location.href = "/";
+  try {
+    console.log('Signing out...');
+    const supabase = createClient();
+    console.log('Signing out...2');
+    await supabase.auth.signOut();
+    console.log('Signing out...3');
+  } catch (error) {
+    console.error('Error signing out:', error);
+  }
+
+  redirect("/");
 };
 
 // A button to show user some account actions

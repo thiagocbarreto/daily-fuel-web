@@ -53,6 +53,16 @@ const ButtonAccountInner = ({
     }));
   };
 
+  const handleSignOutWrapper = async () => {
+    try {
+      console.log('Signing out from inner...');
+      await handleSignOut();
+      console.log('Signed out from inner...');
+    } catch (error) {
+      console.error('Error signing out from inner:', error);
+    }
+  };
+
   return (
     <>
       <EditNameDialog
@@ -163,7 +173,7 @@ const ButtonAccountInner = ({
                     </a>
                     <button
                       className="flex items-center gap-2 hover:bg-error/20 hover:text-error duration-200 py-1.5 px-4 w-full rounded-lg font-medium"
-                      onClick={handleSignOut}
+                      onClick={handleSignOutWrapper}
                     >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"

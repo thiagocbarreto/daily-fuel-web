@@ -22,8 +22,8 @@ const config = {
         // REQUIRED — we use this to find the plan in the webhook (for instance if you want to update the user's credits based on the plan)
         priceId:
           process.env.NODE_ENV === "development"
-            ? "price_1RDnSeH955v6HSMYWECyGbf6"
-            : "price_1RBZGrH955v6HSMYNl2DuH8V",
+            ? "price_1RGJ47H955v6HSMYk6DO4eRR"
+            : "price_1RGIuEH955v6HSMYpQLQFrcD",
         //  REQUIRED - Name of the plan, displayed on the pricing page
         name: "Monthly",
         // A friendly description of the plan, displayed on the pricing page. Tip: explain why this plan and not others
@@ -42,8 +42,8 @@ const config = {
       {
         priceId:
           process.env.NODE_ENV === "development"
-            ? "price_1RBZVpH955v6HSMYLBvZpXKr"
-            : "price_1RBZGKH955v6HSMYkYbmVZcQ",
+            ? "price_1RGJ4nH955v6HSMYYdOjl34L"
+            : "price_1RGIyYH955v6HSMYN7E4JTu1",
         // This plan will look different on the pricing page, it will be highlighted. You can only have one plan with isFeatured: true
         // isFeatured: true,
         name: "Yearly",

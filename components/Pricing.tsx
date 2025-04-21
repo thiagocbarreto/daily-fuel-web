@@ -295,6 +295,10 @@ const Pricing = () => {
             </div>
           </div>
         </div>
+        
+        <p className="text-center text-sm text-base-content/60 mt-8">
+          * Charges will be processed in BRL at the equivalent value
+        </p>
       </div>
     </section>
   );

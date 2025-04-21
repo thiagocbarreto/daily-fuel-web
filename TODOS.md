@@ -14,3 +14,5 @@
            2.  when day is close to ending and not completed
            3.  when challenge ends
            4.  when user is added to a challenge
+   5.  cute
+       1.  add filter to remove finished challenges from the challenges page
