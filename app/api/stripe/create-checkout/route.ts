@@ -132,6 +132,17 @@ export async function POST(req: NextRequest) {
         email: existingUser?.email,
         customerId: existingUser?.stripe_customer_id,
       },
+      ...(mode === 'payment' && {
+        payment_intent_data: {
+          statement_descriptor_suffix: "DAILYFUEL", // max 22 chars
+        },
+      }),
+      ...(mode === 'subscription' && {
+        subscription_data: {
+          description: "DailyFuel Subscription",
+          metadata: {},
+        },
+      }),
       // If you send coupons from the frontend, you can pass it here
       // couponId: body.couponId,
     });
