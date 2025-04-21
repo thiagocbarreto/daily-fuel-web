@@ -99,9 +99,9 @@ export default async function ChallengePage({
   let startDate = new Date(challenge.start_date);
   console.log('------> startDate raw', startDate);
   let endDate = new Date(startDate);
-  startDate = addMinutes(startDate, new Date().getTimezoneOffset());
+  startDate = addMinutes(startDate, tzOffset);
   endDate.setDate(endDate.getDate() + challenge.duration_days - 1);
-  endDate = addMinutes(endDate, new Date().getTimezoneOffset());
+  endDate = addMinutes(endDate, tzOffset);
 
   console.log('------> startDate', startDate);
 
