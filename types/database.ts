@@ -20,6 +20,7 @@ export interface Database {
           current_period_end: string | null
           created_at: string
           price_id: string | null
+          timezone: string | null
         }
         Insert: {
           id: string
@@ -31,6 +32,7 @@ export interface Database {
           current_period_end?: string | null
           created_at?: string
           price_id?: string | null
+          timezone?: string | null
         }
         Update: {
           id?: string
@@ -42,6 +44,7 @@ export interface Database {
           current_period_end?: string | null
           created_at?: string
           price_id?: string | null
+          timezone?: string | null
         }
         Relationships: [
           {

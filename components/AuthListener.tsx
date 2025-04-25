@@ -31,6 +31,9 @@ export default function AuthListener(): null {
                 name: session.user.user_metadata?.full_name || session.user.email?.split('@')[0],
               });
             }
+
+            const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+            await supabase.from('users').update({ timezone }).eq('id', session.user.id);
           } catch (error) {
             console.error('Error creating/checking user:', error);
           }

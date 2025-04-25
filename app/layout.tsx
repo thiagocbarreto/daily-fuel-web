@@ -7,7 +7,6 @@ import config from "@/config";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
 import AuthListener from "@/components/AuthListener";
-import TimezoneOffsetSetter from "@/components/TimezoneOffsetSetter";
 const font = Inter({ subsets: ["latin"] });
 
 export const viewport: Viewport = {
@@ -30,7 +29,6 @@ export default function RootLayout({ children }: { children: ReactNode }) {
 		>
 			<body>
 				<AuthListener />
-				<TimezoneOffsetSetter />
 				{/* ClientLayout contains all the client wrappers (Crisp chat support, toast messages, tooltips, etc.) */}
 				<ClientLayout>{children}</ClientLayout>
 				<Toaster />

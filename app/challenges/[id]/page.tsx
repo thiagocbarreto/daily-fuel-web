@@ -7,17 +7,11 @@ import config from "@/config";
 import ShareJoinLink from "@/components/ShareJoinLink";
 import UserProgressCalendar from "@/components/UserProgressCalendar";
 import ButtonAccount from "@/components/ButtonAccount";
-import { cookies } from "next/headers";
+import { getTimeZones } from "@vvo/tzdb";
 
 export const dynamic = "force-dynamic";
 
-interface DailyLog {
-  id: string;
-  user_id: string;
-  challenge_id: string;
-  date: string;
-  created_at: string;
-}
+const timeZones = getTimeZones();
 
 interface User {
   id: string;
@@ -34,9 +28,6 @@ export default async function ChallengePage({
 }: {
   params: { id: string };
 }) {
-      
-  const tzOffset = Number(cookies().get('tzOffset')?.value || '0');
-  
   const supabase = createClient();
 
   const {
@@ -47,6 +38,17 @@ export default async function ChallengePage({
     redirect(config.auth.loginUrl);
   }
 
+  // Get user's timezone
+  const { data: userData } = await supabase
+    .from('users')
+    .select('timezone')
+    .eq('id', session.user.id)
+    .single();
+
+  // Get timezone info
+  const timezone = timeZones.find(tz => tz.name === userData?.timezone || tz.group.includes(userData?.timezone));
+  const tzOffset = (timezone?.rawOffsetInMinutes || 0) * -1;
+  
   // Fetch challenge details
   const { data: challenge } = await supabase
     .from("challenges")
