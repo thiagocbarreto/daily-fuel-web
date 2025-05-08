@@ -44,6 +44,10 @@ export default async function ChallengeJoinPage({
     .eq("challenge_id", params.id)
     .single();
 
+  if (participantCount?.count >= 100) {
+    throw new Error("This challenge has reached its maximum participant limit. Please contact creator.");
+  }
+
   // Check if authenticated user is already a participant
   const { data: challengeWithUserParticipant } = await supabase
     .from("challenges")

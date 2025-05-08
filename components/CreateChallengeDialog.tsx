@@ -66,19 +66,19 @@ export default function CreateChallengeDialog({ isSubscriber }: CreateChallengeD
     }
   };
 
-  if (!isSubscriber) {
-    return (
-      <Button
-        variant="outline"
-        onClick={() => {
-          // Scroll to pricing section on home page
-          window.location.href = "/#pricing";
-        }}
-      >
-        Upgrade to create a challenge
-      </Button>
-    );
-  }
+  // if (!isSubscriber) {
+  //   return (
+  //     <Button
+  //       variant="outline"
+  //       onClick={() => {
+  //         // Scroll to pricing section on home page
+  //         window.location.href = "/#pricing";
+  //       }}
+  //     >
+  //       Upgrade to create a challenge
+  //     </Button>
+  //   );
+  // }
 
   const today = new Date().toISOString().split("T")[0];
 

@@ -98,13 +98,13 @@ export const renderSchemaTags = () => {
             ratingValue: "4.8",
             ratingCount: "12",
           },
-          offers: [
-            {
-              "@type": "Offer",
-              price: "6.00",
-              priceCurrency: "USD",
-            },
-          ],
+          // offers: [
+          //   {
+          //     "@type": "Offer",
+          //     price: "6.00",
+          //     priceCurrency: "USD",
+          //   },
+          // ],
         }),
       }}
     ></script>

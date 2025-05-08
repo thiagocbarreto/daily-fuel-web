@@ -23,12 +23,27 @@ const faqList: FAQItemProps[] = [
       </div>
     ),
   },
+  // {
+  //   question: "What's the difference between free and paid plans?",
+  //   answer: (
+  //     <p>
+  //       Free users can join challenges and track their progress but cannot create challenges. Subscribers (${config.stripe.plans[0].price}/month or ${config.stripe.plans[1].price}/year) can create unlimited challenges and share them with anyone, plus get access to participation statistics.
+  //     </p>
+  //   ),
+  // },
   {
-    question: "What's the difference between free and paid plans?",
+    question: "Is DailyFuel really free?",
     answer: (
-      <p>
-        Free users can join challenges and track their progress but cannot create challenges. Subscribers (${config.stripe.plans[0].price}/month or ${config.stripe.plans[1].price}/year) can create unlimited challenges and share them with anyone, plus get access to participation statistics.
-      </p>
+      <div className="space-y-2 leading-relaxed">
+        <p>
+          Yes! DailyFuel is completely free to use with some reasonable limitations:
+        </p>
+        <ul className="list-disc pl-4 space-y-1">
+          <li>You can create up to 50 challenges</li>
+          <li>Your challenges can have up to 50 participants</li>
+          <li>If you need to exceed these limits, please contact our support team</li>
+        </ul>
+      </div>
     ),
   },
   {

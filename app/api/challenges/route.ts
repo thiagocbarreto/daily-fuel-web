@@ -33,8 +33,22 @@ export async function POST(request: Request) {
       return new NextResponse("User not found", { status: 404 });
     }
 
-    if (!user.is_subscriber) {
-      return new NextResponse("Subscription required", { status: 403 });
+    // if (!user.is_subscriber) {
+    //   return new NextResponse("Subscription required", { status: 403 });
+    // }
+
+    // Check if user has reached the challenge limit
+    const { count: challengeCount } = await supabase
+      .from("challenges")
+      .select("count")
+      .eq("creator_id", session.user.id)
+      .single();
+
+    if (challengeCount >= 50) {
+      return new NextResponse(
+        "You have reached the maximum limit of 50 challenges. Please contact support to create more.",
+        { status: 403 }
+      );
     }
 
     // Validate request body
