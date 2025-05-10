@@ -139,7 +139,7 @@ const ButtonAccountInner = ({
                       </svg>
                       Edit Name
                     </button>
-                    <button
+                    {/* <button
                       className="flex items-center gap-2 hover:bg-base-300 duration-200 py-1.5 px-4 w-full rounded-lg font-medium"
                       onClick={handleBilling}
                     >
@@ -156,7 +156,7 @@ const ButtonAccountInner = ({
                         />
                       </svg>
                       Billing
-                    </button>
+                    </button> */}
                     <a
                       href={`mailto:support@dailyfuel.app?subject=${encodeURIComponent("Daily Fuel - Support Request")}&body=${encodeURIComponent("Type: [Bug Report/Feature Request]\n\nDescription:\n")}`}
                       className="flex items-center gap-2 hover:bg-base-300 duration-200 py-1.5 px-4 w-full rounded-lg font-medium"

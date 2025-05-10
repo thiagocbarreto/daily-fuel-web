@@ -51,7 +51,7 @@ const faqList: FAQItemProps[] = [
     answer: (
       <div className="space-y-2 leading-relaxed">
         <p>
-          To create a challenge, you need to be a subscriber. Once subscribed, simply:
+          To create a challenge simply:
         </p>
         <ol className="list-decimal pl-4">
           <li>Go to your dashboard</li>
@@ -62,14 +62,14 @@ const faqList: FAQItemProps[] = [
       </div>
     ),
   },
-  {
-    question: "Can I cancel my subscription?",
-    answer: (
-      <p>
-        Yes, you can cancel your subscription at any time. If you cancel, you&apos;ll still have access to subscriber features until the end of your billing period. For yearly subscriptions, we don&apos;t offer prorated refunds for partial usage.
-      </p>
-    ),
-  },
+  // {
+  //   question: "Can I cancel my subscription?",
+  //   answer: (
+  //     <p>
+  //       Yes, you can cancel your subscription at any time. If you cancel, you&apos;ll still have access to subscriber features until the end of your billing period. For yearly subscriptions, we don&apos;t offer prorated refunds for partial usage.
+  //     </p>
+  //   ),
+  // },
   {
     question: "How do I join someone else's challenge?",
     answer: (
