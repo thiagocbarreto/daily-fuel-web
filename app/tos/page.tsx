@@ -62,6 +62,46 @@ const TOS = () => {
 Welcome to DailyFuel (https://dailyfuel.app). By using our website, you agree to the following Terms of Service.
 
 1. Description of Service
+DailyFuel is a free platform that helps users build habits and stay accountable through challenges.
+
+2. Ownership and License
+DailyFuel is a free service that allows users to create and join challenges with reasonable usage limits.
+You may not resell, sublicense, or commercially redistribute access to the platform or its features.
+All platform content, design, and code remain the property of DailyFuel.
+
+3. User Data
+We collect your name and email address to provide our service. We also use web cookies to improve your experience.
+For more details, please read our Privacy Policy: https://dailyfuel.app/privacy-policy
+
+4. Usage Limits
+Free accounts have the following reasonable limitations:
+- Up to 50 challenges can be created
+- Up to 50 participants per challenge
+Please contact support if you need to exceed these limits.
+
+5. Governing Law
+These terms are governed by the laws of Brazil.
+
+6. Updates to the Terms
+We may update these Terms from time to time. Users will be notified of any changes by email.
+
+7. Contact
+For any questions, contact us at thiago@dailyfuel.app.`}
+        </pre>
+      </div>
+    </main>
+  );
+};
+
+export default TOS;
+
+/* Paid version
+
+ {`Effective Date: April 9, 2025
+
+Welcome to DailyFuel (https://dailyfuel.app). By using our website, you agree to the following Terms of Service.
+
+1. Description of Service
 DailyFuel provides a JavaScript code boilerplate to help entrepreneurs launch their startups faster.
 
 2. Ownership and License
@@ -83,11 +123,5 @@ These terms are governed by the laws of Brazil.
 We may update these Terms from time to time. Users will be notified of any changes by email.
 
 7. Contact
-For any questions, contact us at thiago@dailyfuel.app.`}
-        </pre>
-      </div>
-    </main>
-  );
-};
 
-export default TOS;
+*/
