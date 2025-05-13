@@ -4,10 +4,10 @@ import { notFound, redirect } from "next/navigation";
 import { addMinutes, format } from "date-fns";
 import Link from "next/link";
 import config from "@/config";
-import ShareJoinLink from "@/components/ShareJoinLink";
 import UserProgressCalendar from "@/components/UserProgressCalendar";
 import ButtonAccount from "@/components/ButtonAccount";
 import { getTimeZones } from "@vvo/tzdb";
+import ChallengeHeader from "./ChallengeHeader";
 
 export const dynamic = "force-dynamic";
 
@@ -111,49 +111,31 @@ export default async function ChallengePage({
   // Check if current user is the creator
   const isCreator = challenge.creator_id === session.user.id;
 
+  // Check if creator has already joined
+  const { data: creatorParticipation } = await supabase
+    .from("challenge_participants")
+    .select("id")
+    .eq("challenge_id", params.id)
+    .eq("user_id", session.user.id)
+    .single();
+
+  const hasJoined = !!creatorParticipation;
+
   return (
     <main className="min-h-screen p-8 pb-24">
       <div className="max-w-2xl mx-auto space-y-6">
         <ButtonAccount />
-        <Link
-          href="/dashboard"
-          className="inline-flex items-center text-sm text-gray-500 hover:text-gray-700 transition-colors"
-        >
-          <svg
-            className="w-5 h-5 mr-1"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M10 19l-7-7m0 0l7-7m-7 7h18"
-            />
-          </svg>
-          Back to Dashboard
-        </Link>
+        <ChallengeHeader 
+          challengeId={params.id}
+          title={challenge.title}
+          creatorName={challenge.creator.name}
+          isCreator={isCreator}
+          hasJoined={hasJoined}
+          status={status}
+          statusColorClass={statusColorClass}
+        />
 
         <div className="bg-white rounded-lg shadow-sm border p-8">
-          <div className="flex justify-between items-start mb-6">
-            <div className="space-y-3">
-              <div>
-                <h1 className="text-3xl font-bold text-gray-900">{challenge.title}</h1>
-                <p className="text-sm text-gray-500 mt-1">
-                  Created by {challenge.creator.name} {isCreator ? "(you)" : ""}
-                </p>
-              </div>
-              <ShareJoinLink challengeId={params.id} />
-            </div>
-            <span
-              className={`px-3 py-1 rounded-full text-sm font-medium capitalize ${statusColorClass}`}
-            >
-              {status}
-            </span>
-          </div>
-
           <div className="space-y-6">
             <div className="prose max-w-none">
               <p className="text-gray-600">{challenge.description}</p>

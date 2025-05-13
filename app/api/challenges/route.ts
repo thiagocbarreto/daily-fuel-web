@@ -7,6 +7,7 @@ const createChallengeSchema = z.object({
   description: z.string().max(500).optional(),
   durationDays: z.number().int().min(1).max(365),
   startDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+  joinChallenge: z.boolean().optional(),
 });
 
 export async function POST(request: Request) {
@@ -56,17 +57,36 @@ export async function POST(request: Request) {
     const validatedData = createChallengeSchema.parse(body);
 
     // Create challenge
-    const { error: insertError } = await supabase.from("challenges").insert({
-      creator_id: session.user.id,
-      title: validatedData.title,
-      description: validatedData.description || null,
-      duration_days: validatedData.durationDays,
-      start_date: validatedData.startDate,
-    });
+    const { data: challenge, error: insertError } = await supabase
+      .from("challenges")
+      .insert({
+        creator_id: session.user.id,
+        title: validatedData.title,
+        description: validatedData.description || null,
+        duration_days: validatedData.durationDays,
+        start_date: validatedData.startDate,
+      })
+      .select()
+      .single();
 
     if (insertError) {
       console.error("Error creating challenge:", insertError);
       return new NextResponse("Failed to create challenge", { status: 500 });
+    }
+
+    // Join the challenge if requested
+    if (validatedData.joinChallenge) {
+      const { error: joinError } = await supabase
+        .from("challenge_participants")
+        .insert({
+          challenge_id: challenge.id,
+          user_id: session.user.id,
+        });
+
+      if (joinError) {
+        console.error("Error joining challenge:", joinError);
+        // Don't fail the request if joining fails
+      }
     }
 
     return new NextResponse("Challenge created successfully", { status: 201 });

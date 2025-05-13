@@ -8,6 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/components/ui/use-toast";
 import { useRouter } from "next/navigation";
+import { Checkbox } from "@/components/ui/checkbox";
 
 interface CreateChallengeDialogProps {
   isSubscriber: boolean;
@@ -28,6 +29,7 @@ export default function CreateChallengeDialog({ isSubscriber }: CreateChallengeD
     const description = formData.get("description") as string;
     const durationDays = parseInt(formData.get("duration") as string);
     const startDate = formData.get("startDate") as string;
+    const joinChallenge = formData.get("joinChallenge") === "on";
 
     try {
       const res = await fetch("/api/challenges", {
@@ -40,6 +42,7 @@ export default function CreateChallengeDialog({ isSubscriber }: CreateChallengeD
           description,
           durationDays,
           startDate,
+          joinChallenge,
         }),
       });
 
@@ -133,6 +136,12 @@ export default function CreateChallengeDialog({ isSubscriber }: CreateChallengeD
               min={today}
               defaultValue={today}
             />
+          </div>
+          <div className="flex items-center space-x-2">
+            <Checkbox id="joinChallenge" name="joinChallenge" defaultChecked />
+            <Label htmlFor="joinChallenge" className="text-sm font-normal">
+              Join this challenge when created
+            </Label>
           </div>
           <Button type="submit" className="w-full" disabled={loading}>
             {loading ? "Creating..." : "Create Challenge"}

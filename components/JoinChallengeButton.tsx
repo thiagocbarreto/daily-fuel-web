@@ -77,7 +77,7 @@ export default function JoinChallengeButton({ challengeId }: JoinChallengeButton
           Joining...
         </>
       ) : (
-        "Join Challenge"
+        "Join challenge"
       )}
     </button>
   );
